@@ -25,6 +25,8 @@ docker compose build --no-cache synapse && docker compose up -d
 
 ```
 
+* **URL:** `http://localhost:8008`
+
 ### 3. Create an Admin User
 
 Run the following command to create your first user. You will be prompted for a password and asked if the user should be an admin (choose **yes**):
@@ -33,7 +35,6 @@ Run the following command to create your first user. You will be prompted for a 
 docker exec -it synapse register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
 
 ```
-* **URL:** `http://localhost:8008`
 
 ---
 
