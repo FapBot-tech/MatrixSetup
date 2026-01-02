@@ -1,0 +1,145 @@
+# Configuration file for Synapse.
+#
+# This is a YAML file: see [1] for a quick introduction. Note in particular
+# that *indentation is important*: all the elements of a list or dictionary
+# should have the same indentation.
+#
+# [1] https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+#
+# For more information on how to configure Synapse, including a complete accounting of
+# each option, go to docs/usage/configuration/config_documentation.md or
+# https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
+server_name: "chat.your.domain"
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: false
+
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: {{change_to_env_value}}
+    dbname: synapse
+    host: db
+    port: 5432
+    cp_min: 5
+    cp_max: 10
+
+
+log_config: "/data/chat.your.domain.log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "bhOhyJgxMi*7oHPrOR1Ns;ikR3cP,GdbcMxtVK24dDLCWr@Lxu"
+report_stats: false
+macaroon_secret_key: "_S1MK:d7dM8u.X.i~V8T6,GIlV+I0b0~GdYNgGb3SAGF,hp=za"
+form_secret: "lSJZPookogou=eC_M21E@^U;b9QvrSkdT-7=V,HR8LG2qIX3TS"
+signing_key_path: "/data/chat.your.domain.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+suppress_key_server_warning: true
+rc_registration:
+  per_second: 0.15
+  burst_count: 2
+enable_registration: true
+enable_registration_without_verification: true
+allow_per_room_profiles: false
+max_avatar_size: 10M
+retention:
+  enabled: true
+  default_policy:
+    min_lifetime: 14d
+    max_lifetime: 30d
+  allowed_lifetime_min: 14d
+  allowed_lifetime_max: 30d
+  purge_jobs:
+    - longest_max_lifetime: 30d
+      interval: 1d
+    - shortest_max_lifetime: 14d
+      interval: 1d
+rc_message:
+  per_second: 2
+  burst_count: 15
+max_upload_size: 60M
+dynamic_thumbnails: true
+media_retention:
+    local_media_lifetime: 30d
+    remote_media_lifetime: 14d
+url_preview_enabled: true
+enable_set_displayname: false
+auto_join_rooms:
+  - "#general:chat.your.domain"
+session_lifetime: 24h
+password_config:
+   policy:
+      enabled: true
+      minimum_length: 8
+      require_digit: false
+      require_symbol: false
+      require_lowercase: false
+      require_uppercase: false
+url_preview_url_blacklist:
+  # blacklist any URL with a username in its URI
+  - username: '*'
+url_preview_ip_range_blacklist:
+  - '127.0.0.0/8'
+  - '10.0.0.0/8'
+  - '172.16.0.0/12'
+  - '192.168.0.0/16'
+  - '100.64.0.0/10'
+  - '192.0.0.0/24'
+  - '169.254.0.0/16'
+  - '192.88.99.0/24'
+  - '198.18.0.0/15'
+  - '192.0.2.0/24'
+  - '198.51.100.0/24'
+  - '203.0.113.0/24'
+  - '224.0.0.0/4'
+  - '::1/128'
+  - 'fe80::/10'
+  - 'fc00::/7'
+  - '2001:db8::/32'
+  - 'ff00::/8'
+  - 'fec0::/10'
+enable_group_creation: false
+room_list_publication_rules:
+  - user_id: '@myxr:chat.your.domain'
+    action: allow
+  - action: deny
+enable_room_list_search: true
+delete_stale_devices_after: 30d
+
+default_power_level_content_override:
+  private_chat:
+    events_default: 10
+    users_default: 10
+    state_default: 50
+  public_chat:
+    events_default: 10
+    users_default: 10
+    state_default: 50
+  trusted_private_chat:
+    events_default: 10
+    users_default: 10
+    state_default: 50
+
+modules:
+  - module: room_restrict.RoomRestrictor
+  - module: word_filter.WordFilter
+    config:
+      blocked_words:
+        - twitter.com
+        - youtube.com
+        - x.com
+  - module: file_type_filter.FileTypeFilter
+    config:
+      allowed_types:
+        - video/mp4
+        - image/jpeg
+        - image/png
+        - image/gif
+        - application/octet-stream
