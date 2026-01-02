@@ -59,14 +59,6 @@ docker run -d -p 8080:80 --name synapse-admin awesometechnologies/synapse-admin
 
 ---
 
-## 🛡 Security & Modules
-
-This build includes three custom security modules located in the `/modules` folder:
-
-1. **Room Restrictor:** Limits room creation and visibility based on custom logic.
-2. **Word Filter:** Automatically blocks messages containing blacklisted domains (Twitter, YouTube, x.com).
-3. **File Type Filter:** Uses `libmagic` to sniff file headers and only allows specific MIME types (MP4, JPEG, PNG, GIF).
-
 ### Power Level Defaults
 
 This server is configured with a **"Read-Only by Default"** policy for new rooms:
