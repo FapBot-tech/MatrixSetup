@@ -75,7 +75,7 @@ To allow users to connect via a standard domain without specifying port `8008`, 
 
 ```apache2
 <VirtualHost *:80>
-    ServerName chat.your.dom
+    ServerName chat.example.org
 
     ProxyRequests On
     ProxyPass / http://localhost:8008/
@@ -91,20 +91,6 @@ To allow users to connect via a standard domain without specifying port `8008`, 
 * **homeserver.yaml:** Main Synapse configuration file located in the `synapse-data` volume.
 * **docker-compose.yaml:** Docker Compose file defining services, volumes, and networks.
 * **Dockerfile:** Custom Dockerfile for building the Synapse image with additional modules.
-* **.env:** Environment file for sensitive variables like database passwords.
-
-#### homeserver.yaml Key Settings
-* server_name: `chat.your.domain` -> replace this with whatever domain you plan on hosting matrix on.
-* retention: I've configured messages to be kept for at least 14 days and at most 30 days. No clue why the variance but feel free to change do your desire
-* rc_message: Configures rate-limiting for messages to prevent spam. Adjust to how many messages you want a single user to send per second an in burts.
-* media_retention: Same as the message retention but for media files.
-* auto_join_rooms: A list of rooms that new users will automatically join upon registration. Adjust as needed. I've added the general chat by default, this means new users will be able to chat right away. But they're free to leave.
-* room_list_publication_rules: Update the first user_id listed to whichever the user ID ends up being for your main admin user. You can add more to the list but all this means is which rooms are listed publicly which most users cannot create rooms anywas.
-* modules:
-  * `module: room_restrict.RoomRestrictor` - If kept enabled, only users with admin privileges can create new rooms. Users can still create direct messages
-  * `module: word_filter.WordFilter` - Will replace certain words from messages
-  * `module: file_type_filter.FileTypeFilter` - Will block certain file types from being uploaded based on their MIME type.
-
 
 ## 📝 Maintenance Note
 
