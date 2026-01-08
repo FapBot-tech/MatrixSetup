@@ -9,7 +9,8 @@
 # For more information on how to configure Synapse, including a complete accounting of
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
-server_name: "chat.your.domain"
+server_name: "chat.example.org"
+web_client_location: https://commet.example.org
 pid_file: /data/homeserver.pid
 listeners:
   - port: 8008
@@ -17,38 +18,61 @@ listeners:
     type: http
     x_forwarded: true
     resources:
-      - names: [client, federation]
+      - names: [ client, federation ]
         compress: false
 
 database:
   name: psycopg2
   args:
     user: synapse
-    password: {{change_to_env_value}}
+    password: ZZ3ouN1ZAvR36L3EKt85
     dbname: synapse
     host: db
     port: 5432
     cp_min: 5
     cp_max: 10
 
-
-log_config: "/data/chat.your.domain.log.config"
-media_store_path: /data/media_store
-registration_shared_secret: "bhOhyJgxMi*7oHPrOR1Ns;ikR3cP,GdbcMxtVK24dDLCWr@Lxu"
-report_stats: false
-macaroon_secret_key: "_S1MK:d7dM8u.X.i~V8T6,GIlV+I0b0~GdYNgGb3SAGF,hp=za"
-form_secret: "lSJZPookogou=eC_M21E@^U;b9QvrSkdT-7=V,HR8LG2qIX3TS"
-signing_key_path: "/data/chat.your.domain.signing.key"
-trusted_key_servers:
-  - server_name: "matrix.org"
-suppress_key_server_warning: true
+rc_message:
+  per_second: 2.0
+  burst_count: 15
 rc_registration:
   per_second: 0.15
-  burst_count: 2
-enable_registration: true
+  burst_count: 2.0
+rc_login:
+  address:
+    per_second: 2.0
+    burst_count: 15.0
+  account:
+    per_second: 2.0
+    burst_count: 14.0
+  failed_attempts:
+    per_second: 2.0
+    burst_count: 17.0
+rc_admin_redaction:
+  per_second: 10.0
+  burst_count: 100.0
+rc_room_creation:
+  per_second: 0.016
+  burst_count: 10.0
+
 enable_registration_without_verification: true
+enable_registration: true
+report_stats: false
+require_auth_for_profile_requests: true
+suppress_key_server_warning: true
 allow_per_room_profiles: false
-max_avatar_size: 10M
+dynamic_thumbnails: true
+url_preview_enabled: true
+enable_set_displayname: false
+enable_group_creation: false
+enable_room_list_search: true
+
+push:
+  enabled: true
+  include_content: false
+  group_unread_count_by_room: true
+  jitter_delay: 10s
+
 retention:
   enabled: true
   default_policy:
@@ -61,27 +85,49 @@ retention:
       interval: 1d
     - shortest_max_lifetime: 14d
       interval: 1d
-rc_message:
-  per_second: 2
-  burst_count: 15
 max_upload_size: 60M
-dynamic_thumbnails: true
-media_retention:
-    local_media_lifetime: 30d
-    remote_media_lifetime: 14d
-url_preview_enabled: true
-enable_set_displayname: false
-auto_join_rooms:
-  - "#general:chat.your.domain"
+max_avatar_size: 10M
 session_lifetime: 24h
+delete_stale_devices_after: 30d
+
+media_retention:
+  local_media_lifetime: 30d
+  remote_media_lifetime: 14d
+
+media_upload_limits:
+  - time_period: 1h
+    max_size: 100M
+  - time_period: 1D
+    max_size: 1G
+
+auto_join_rooms:
+  - "#general:chat.example.org"
+trusted_key_servers:
+  - server_name: "matrix.org"
+
 password_config:
-   policy:
-      enabled: true
-      minimum_length: 8
-      require_digit: false
-      require_symbol: false
-      require_lowercase: false
-      require_uppercase: false
+  policy:
+    enabled: true
+    minimum_length: 8
+    require_digit: false
+    require_symbol: false
+    require_lowercase: false
+    require_uppercase: false
+
+media_store_path: /data/media_store
+registration_shared_secret: "bhOhyJgxMi*7oHPrOR1Ns;ikR3cP,GdbcMxtVK24dDLCWr@Lxu"
+macaroon_secret_key: "_S1MK:d7dM8u.X.i~V8T6,GIlV+I0b0~GdYNgGb3SAGF,hp=za"
+form_secret: "lSJZPookogou=eC_M21E@^U;b9QvrSkdT-7=V,HR8LG2qIX3TS"
+signing_key_path: "/data/chat.example.org.signing.key"
+log_config: "/data/chat.example.org.log.config"
+
+user_directory:
+  enabled: false
+  search_all_users: true
+  prefer_local_users: true
+  exclude_remote_users: true
+  show_locked_users: false
+
 url_preview_url_blacklist:
   # blacklist any URL with a username in its URI
   - username: '*'
@@ -105,13 +151,6 @@ url_preview_ip_range_blacklist:
   - '2001:db8::/32'
   - 'ff00::/8'
   - 'fec0::/10'
-enable_group_creation: false
-room_list_publication_rules:
-  - user_id: '@myxr:chat.your.domain'
-    action: allow
-  - action: deny
-enable_room_list_search: true
-delete_stale_devices_after: 30d
 
 default_power_level_content_override:
   private_chat:
