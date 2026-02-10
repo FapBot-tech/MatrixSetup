@@ -9,11 +9,11 @@
 # For more information on how to configure Synapse, including a complete accounting of
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
-server_name: "chat.example.org" # Replace with your own domain, this is what the matrix backend will run, not what the users type in their browser
-web_client_location: https://commet.example.org # Replace with your web client URL, this is what the users will type in their browser
+server_name: "msg.fapbot.tech" # Replace with your own domain, this is what the matrix backend will run, not what the users type in their browser
+web_client_location: https://chat.fapbot.tech
 pid_file: /data/homeserver.pid
 listeners:
-  - port: 8008
+  - port: 8088
     tls: false
     type: http
     x_forwarded: true
@@ -26,10 +26,10 @@ database:
   name: psycopg2
   args:
     user: synapse
-    password: ZZ3ouN1ZAvR36L3EKt85 # Replace with your enviroment variable defined password
+    password: lYSeulAQltFcsl7V4gcW # Replace with your enviroment variable defined password
     dbname: synapse
     host: db
-    port: 5432
+    port: 5433
     cp_min: 5
     cp_max: 10
 
@@ -104,7 +104,7 @@ media_upload_limits:
 
 # Which rooms should be automatically joined by new users, you can add more rooms here. Make sure the room IDs are correct.
 auto_join_rooms:
-  - "#general:chat.example.org"
+  - "#general:msg.fapbot.tech"
 
 # Can also be removed if we use oAuth2 or SSO
 password_config:
@@ -121,8 +121,8 @@ media_store_path: /data/media_store
 registration_shared_secret: "bhOhyJgxMi*7oHPrOR1Ns;ikR3cP,GdbcMxtVK24dDLCWr@Lxu"
 macaroon_secret_key: "_S1MK:d7dM8u.X.i~V8T6,GIlV+I0b0~GdYNgGb3SAGF,hp=za"
 form_secret: "lSJZPookogou=eC_M21E@^U;b9QvrSkdT-7=V,HR8LG2qIX3TS"
-signing_key_path: "/data/chat.example.org.signing.key"
-log_config: "/data/chat.example.org.log.config"
+signing_key_path: "/data/msg.fapbot.tech.signing.key"
+log_config: "/data/msg.fapbot.tech.log.config"
 
 trusted_key_servers:
     - server_name: "matrix.org"
@@ -159,18 +159,22 @@ url_preview_ip_range_blacklist:
   - 'ff00::/8'
   - 'fec0::/10'
 
-# This confiures the default power levels in different types of rooms, by setting it above 0 we reserve a role for 'muted' users
+# This configures the default power levels in different types of rooms, by setting it above 0 we reserve a role for 'muted' users
 default_power_level_content_override:
   private_chat: # Group with invites only
-    events_default: 10 # Min power level to send messages
+    events:
+      "m.room.encryption": 999
+    events_default: 10
     users_default: 10 # Default power level for users
     state_default: 50 # Min power level to change room state (moderator or above)
   public_chat: # Open group
-    events_default: 10
+    events:
+      "m.room.encryption": 999
     users_default: 10
     state_default: 50
   trusted_private_chat: # Direct messages between users
-    events_default: 10
+    events:
+      "m.room.encryption": 999
     users_default: 10
     state_default: 50
 
@@ -192,3 +196,4 @@ modules:
         - image/png
         - image/gif
         - application/octet-stream
+  - module: private_message_file_blocker.PrivateMessageFileBlocker

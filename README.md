@@ -13,6 +13,12 @@ Before running the stack, create a `.env` file in the root directory:
 
 ```bash
 echo "POSTGRES_PASSWORD=your_secure_password" > .env
+
+docker run -it --rm \
+    --mount type=volume,src=synapse-data,dst=/data \
+    -e SYNAPSE_SERVER_NAME=my.matrix.host \
+    -e SYNAPSE_REPORT_STATS=yes \
+    matrixdotorg/synapse:latest generate
 ```
 
 Then make sure the password in your homeserver.yaml matches whatever you've got in your env
@@ -21,7 +27,7 @@ Then make sure the password in your homeserver.yaml matches whatever you've got 
 Build the custom image (which includes the `python-magic` dependencies and custom modules) and start the stack:
 
 ```bash
-docker compose build --no-cache synapse && docker compose up -d
+docker compose up -d
 
 ```
 
@@ -75,7 +81,7 @@ To allow users to connect via a standard domain without specifying port `8008`, 
 
 ```apache2
 <VirtualHost *:80>
-    ServerName chat.example.org
+    ServerName msg.fapbot.tech
 
     ProxyRequests On
     ProxyPass / http://localhost:8008/

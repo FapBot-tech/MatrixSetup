@@ -1,21 +1,23 @@
 services:
   synapse:
-    container_name: synapse
+    container_name: synapse-2
     build: .
     restart: unless-stopped
     ports:
-      - "8008:8008"
+      - "8088:8088"
     volumes:
       # This matches your 'synapse-data' volume from your docker run command
-      - synapse-data:/data
+      - ./data:/data
       - ./homeserver.yaml:/data/homeserver.yaml:ro
     environment:
       - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+    depends_on:
+      - db
 
 
   db:
     image: postgres:16-alpine
-    container_name: synapse_db
+    container_name: synapse-2_db
     restart: unless-stopped
     environment:
       - POSTGRES_USER=synapse
@@ -24,9 +26,10 @@ services:
       # Required for Synapse to handle encoding correctly
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     volumes:
-      - synapse-db-data:/var/lib/postgresql/data
-      
+      - synapse-2-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    command: -p 5433
+
 volumes:
-  synapse-data:
-    external: true  # This tells Docker to use the volume you already created
-  synapse-db-data:
+  synapse-2-db-data:
