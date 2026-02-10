@@ -166,17 +166,24 @@ default_power_level_content_override:
       "m.room.encryption": 999
     events_default: 10
     users_default: 10 # Default power level for users
-    state_default: 50 # Min power level to change room state (moderator or above)
+    state_default: 100 # Min power level to change room state (moderator or above)
   public_chat: # Open group
     events:
       "m.room.encryption": 999
     users_default: 10
-    state_default: 50
+    state_default: 100
   trusted_private_chat: # Direct messages between users
     events:
       "m.room.encryption": 999
     users_default: 10
-    state_default: 50
+    state_default: 100
+
+room_list_publication_rules:
+  - user_id: "@myxr:msg.fapbot.tech"
+    action: allow
+  - user_id: "@southernsharpshooter:msg.fapbot.tech"
+    action: allow
+  - action: deny  # This final rule blocks everyone not listed above
 
 # Custom module configuration
 modules:
