@@ -186,7 +186,6 @@ default_power_level_content_override:
     users_default: 10
     state_default: 100
 
-
 # Custom module configuration
 modules:
   - module: room_restrict.RoomRestrictor # Remove if we want non-admin users to create public rooms
@@ -362,3 +361,4 @@ modules:
   - module: edit_blocker.EditBlocker
     config:
       required_power_level: 50
+  - module: cinny_power_level_tags.CinnyPowerLevelTags
