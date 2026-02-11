@@ -4,8 +4,7 @@ from synapse.module_api import ModuleApi, NOT_SPAM
 
 logger = logging.getLogger(__name__)
 
-# Content for the Cinny power level tags state event
-CINNY_POWER_LEVEL_TAGS = {
+DEFAULT_CINNY_POWER_LEVEL_TAGS = {
     "0": {"name": "Muted", "color": "#ff0000", "icon": {"key": "🤡"}},
     "10": {"name": "Member", "color": "#ffffff"},
     "50": {"name": "Moderator", "color": "#1fd81f"},
@@ -16,13 +15,15 @@ CINNY_POWER_LEVEL_TAGS = {
 class CinnyPowerLevelTags:
     """
     Synapse module to set in.cinny.room.power_level_tags state event when '!cinnytags' command is sent.
+    Tags are configurable via the 'tags' key in homeserver.yaml.
     """
     def __init__(self, config: dict, api: ModuleApi):
         self.api = api
+        self.tags = config.get("tags", DEFAULT_CINNY_POWER_LEVEL_TAGS)
         self.api.register_spam_checker_callbacks(
             check_event_for_spam=self.check_event_for_spam,
         )
-        logger.info(f"*** {self.__class__.__name__} initialized ***")
+        logger.info(f"*** {self.__class__.__name__} initialized with tags: {self.tags} ***")
 
     @staticmethod
     def parse_config(config: dict) -> dict:
@@ -46,7 +47,7 @@ class CinnyPowerLevelTags:
                 "type": "in.cinny.room.power_level_tags",
                 "room_id": room_id,
                 "sender": user_id,
-                "content": CINNY_POWER_LEVEL_TAGS,
+                "content": self.tags,
                 "state_key": "",
             }
             try:

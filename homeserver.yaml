@@ -188,8 +188,8 @@ default_power_level_content_override:
 
 # Custom module configuration
 modules:
-  - module: room_restrict.RoomRestrictor # Remove if we want non-admin users to create public rooms
-  - module: word_filter.WordFilter
+  - module: room_restrict.RoomRestrictor # Blocks non System-admin users from creating channels, public or private. Direct messages still allowed
+  - module: word_filter.WordFilter # Replaces the following list of words with ***, semi invisibly to the sending user, but visible to all others.
     config:
       blocked_words: # Add more words as needed, listed words will be censored before being sent to other users
         - facebook
@@ -348,7 +348,7 @@ modules:
         - xfree
         - sltroom
         - sltb
-  - module: file_type_filter.FileTypeFilter
+  - module: file_type_filter.FileTypeFilter # Blocks uploads of file types not in the allowed list. Uses 'libmagic1' MIME type detection, so make sure the allowed types are valid MIME types and not just file extensions. (This is also the only applicable plugin for admins)
     config:
       allowed_types: # Only allow these file types to be uploaded, make sure these are valid MIME types.
         - video/mp4
@@ -357,8 +357,15 @@ modules:
         - image/png
         - image/gif
         - application/octet-stream
-  - module: private_message_file_blocker.PrivateMessageFileBlocker
-  - module: edit_blocker.EditBlocker
+  - module: private_message_file_blocker.PrivateMessageFileBlocker # Blocks users from uploading files in direct messages. Again sending user won't really notice, receiving users will not get anything though.
+  - module: edit_blocker.EditBlocker # Blocks users below the configured power level from editing their messages, they can still edit their messages but the changes won't be visible to other users. This is useful to prevent users from sending a message and then changing it to something else, which can be used to bypass the word filter or send harmful content.
     config:
       required_power_level: 50
-  - module: cinny_power_level_tags.CinnyPowerLevelTags
+  - module: cinny_power_level_tags.CinnyPowerLevelTags # Sets the power levels for the channel `!cinnytags` is sent in to the below configured values. Can only be used by system admins.
+    config:
+      tags:
+        "0": { name: "Muted", color: "#ff0000", icon: { key: "🤡" } }
+        "10": { name: "Member", color: "#ffffff" }
+        "50": { name: "Moderator", color: "#1fd81f" }
+        "100": { name: "Admin", color: "#0088ff" }
+        "999": { name: "Final boss", color: "#000000" }
