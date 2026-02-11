@@ -1,0 +1,19 @@
+{
+  "defaultHomeserver": 0,
+  "homeserverList": [
+    "chat.localhost"
+  ],
+  "allowCustomHomeservers": false,
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [],
+    "rooms": [
+      "#general:localhost"
+    ],
+    "servers": []
+  },
+  "hashRouter": {
+    "enabled": true,
+    "basename": "/"
+  }
+}

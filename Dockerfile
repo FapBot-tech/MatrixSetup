@@ -1,4 +1,4 @@
-FROM matrixdotorg/synapse:v1.114.0@sha256:3c07255ec6e9f81e005f948913a500f0cdf3e0f3673c41839266d2de4a1ae2ab
+FROM matrixdotorg/synapse:sha-1841ded
 
 # 1. Copy all custom modules from the local 'modules' folder
 # This will put room_restrict.py at /usr/local/lib/python3.11/site-packages/room_restrict.py
@@ -10,5 +10,4 @@ RUN chmod 644 /usr/local/lib/python3.13/site-packages/*.py
 # 3. Copy your local homeserver.yaml
 COPY homeserver.yaml /data/homeserver.yaml
 
-RUN apt-get update && apt-get install -y libmagic1
-RUN pip install python-magic
+RUN apt-get update && apt-get install -y libmagic1 && pip install python-magic

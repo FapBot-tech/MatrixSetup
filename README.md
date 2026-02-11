@@ -1,3 +1,10 @@
+#### @TODO: Expand docker file to spin up everything:
+* Synapse proxy (chat.%domain%)
+* Custom - Cinny fork (%domain%) https://github.com/FapBot-tech/cinny (See if I can make my own deployments with the dist results)
+* (Maybe) Fapbot instance (moderation.%domain%) 
+
+---
+
 # Matrix Synapse Deployment (v1.114.0)
 
 This repository contains a production-ready Matrix Synapse deployment using **PostgreSQL 16** and custom **Python spam-filtering modules**.
@@ -13,13 +20,8 @@ Before running the stack, create a `.env` file in the root directory:
 
 ```bash
 echo "POSTGRES_PASSWORD=your_secure_password" > .env
-
-docker run -it --rm \
-    --mount type=volume,src=synapse-data,dst=/data \
-    -e SYNAPSE_SERVER_NAME=my.matrix.host \
-    -e SYNAPSE_REPORT_STATS=yes \
-    matrixdotorg/synapse:latest generate
 ```
+
 
 Then make sure the password in your homeserver.yaml matches whatever you've got in your env
 
@@ -31,6 +33,17 @@ docker compose up -d
 
 ```
 
+Then we'll need to generate the initial configuration file for Synapse:
+
+
+```bash
+docker run -it --rm \
+    dst=/data \
+    -e SYNAPSE_SERVER_NAME=chat.your.domain \
+    -e SYNAPSE_REPORT_STATS=yes \
+    matrixdotorg/synapse:latest generate
+```
+
 * **URL:** `http://localhost:8008`
 
 ### 3. Create an Admin User
@@ -38,7 +51,7 @@ docker compose up -d
 Run the following command to create your first user. You will be prompted for a password and asked if the user should be an admin (choose **yes**):
 
 ```bash
-docker exec -it synapse register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+docker exec -it synapse-2 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
 
 ```
 
@@ -62,8 +75,6 @@ docker run -d -p 8080:80 --name synapse-admin awesometechnologies/synapse-admin
 1. Download the latest release from the [Cinny GitHub Releases](https://www.google.com/search?q=https://github.com/cinnyapp/cinny/releases).
 2. Upload the static files to the root directory of your web host (Nginx/Apache).
 3. Login using your homeserver URL.
-
----
 
 ### Power Level Defaults
 

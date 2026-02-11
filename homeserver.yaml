@@ -97,10 +97,10 @@ media_retention:
   remote_media_lifetime: 14d # How long media fetched from other servers is retained
 
 media_upload_limits:
-  - time_period: 1h
-    max_size: 100M # How much media can be uploaded in this time period, so despite he messages rate limit we can block users from uploading too much media
-  - time_period: 1d
-    max_size: 1G
+  - time_period: 5m
+    max_size: 20M # How much media can be uploaded in this time period, so despite he messages rate limit we can block users from uploading too much media
+  - time_period: 15m
+    max_size: 100M
 
 # Which rooms should be automatically joined by new users, you can add more rooms here. Make sure the room IDs are correct.
 auto_join_rooms:
@@ -164,26 +164,28 @@ default_power_level_content_override:
   private_chat: # Group with invites only
     events:
       "m.room.encryption": 999
+      "m.room.message": 10
+      "m.room.redaction": 50
     events_default: 10
     users_default: 10 # Default power level for users
     state_default: 100 # Min power level to change room state (moderator or above)
   public_chat: # Open group
     events:
       "m.room.encryption": 999
+      "m.room.message": 10
+      "m.room.redaction": 50
+    events_default: 10
     users_default: 10
     state_default: 100
   trusted_private_chat: # Direct messages between users
     events:
       "m.room.encryption": 999
+      "m.room.message": 10
+      "m.room.redaction": 50
+    events_default: 10
     users_default: 10
     state_default: 100
 
-room_list_publication_rules:
-  - user_id: "@myxr:msg.fapbot.tech"
-    action: allow
-  - user_id: "@southernsharpshooter:msg.fapbot.tech"
-    action: allow
-  - action: deny  # This final rule blocks everyone not listed above
 
 # Custom module configuration
 modules:
@@ -191,9 +193,162 @@ modules:
   - module: word_filter.WordFilter
     config:
       blocked_words: # Add more words as needed, listed words will be censored before being sent to other users
-        - twitter.com
-        - youtube.com
-        - x.com
+        - facebook
+        - bnwo
+        - padlet
+        - yahoo
+        - chatstep
+        - jailbait
+        - skype
+        - teamviewer
+        - unsee
+        - incest
+        - craigslist
+        - instagram
+        - myspace
+        - tox
+        - toxxen
+        - jit
+        - flickr
+        - vestimage
+        - volafile
+        - twitter
+        - volafile
+        - anydesk
+        - motherless
+        - whatsapp
+        - snapchat
+        - lolita
+        - rape
+        - vyew
+        - preteen
+        - pthc
+        - erome
+        - norwalk
+        - lolibooru
+        - imig
+        - anonvote
+        - printedpics
+        - chaturbate
+        - wetransfer
+        - nigger
+        - r@ape
+        - incst
+        - anydesk
+        - imgbb
+        - teengallery
+        - pornpros
+        - megaporn
+        - firesex
+        - firegirls
+        - 69sex
+        - img2597
+        - telegram
+        - gigatribe
+        - wixxchat
+        - myCircle
+        - taboo
+        - chatpic
+        - darkwire
+        - cutiegarden
+        - nigga
+        - funkyimg
+        - unSee
+        - wickr
+        - limewire
+        - muwire
+        - whereby
+        - dropbox
+        - rateme
+        - tiktok
+        - nigger
+        - pictausch
+        - bongacams
+        - talky
+        - chatpic
+        - lovense
+        - raping
+        - rapist
+        - pedophile
+        - pedobear
+        - paedophile
+        - niger
+        - hack
+        - screenleap
+        - kik
+        - taboos
+        - Taboos
+        - niggr
+        - rapes
+        - raped
+        - joinme
+        - qtox
+        - motherlessmedia
+        - motherless
+        - r@pe
+        - sexchat
+        - 4chan
+        - qtheaven
+        - fetlife
+        - qt0x
+        - vk
+        - t0x
+        - piksor
+        - sltboard
+        - gook
+        - assraped
+        - temp-exposed
+        - pixwox
+        - sonja
+        - sonjamoos
+        - discord
+        - discordapp
+        - drive.proton
+        - jitsi
+        - ko-fi
+        - Teleguard
+        - telegard
+        - onlyfan
+        - onlyfans
+        - goog
+        - Lovesne
+        - meetinchat
+        - 321sexchat
+        - sasisa
+        - lpsg
+        - mega
+        - moe
+        - iili
+        - protem
+        - instamodelsworld
+        - worldofmodels
+        - Session
+        - Sess
+        - workupload
+        - dadandphotographer
+        - everiaclub
+        - imgscr
+        - worldofinstamodels
+        - bellaalv
+        - whereby
+        - bestinstateens
+        - motionmuse
+        - motherlesspics
+        - photocircleapp
+        - bestinstacollections
+        - t.me
+        - imagepond
+        - uguu
+        - bsky
+        - strichliste
+        - opengoon
+        - vidqu
+        - castrate
+        - vore
+        - sltb
+        - xfree
+        - sltroom
+        - sltb
   - module: file_type_filter.FileTypeFilter
     config:
       allowed_types: # Only allow these file types to be uploaded, make sure these are valid MIME types.
@@ -204,3 +359,6 @@ modules:
         - image/gif
         - application/octet-stream
   - module: private_message_file_blocker.PrivateMessageFileBlocker
+  - module: edit_blocker.EditBlocker
+    config:
+      required_power_level: 50
