@@ -56,6 +56,12 @@ class PrivateMessageFileBlocker:
             logger.info(f"*** {self.__class__.__name__} | Message is no attachment ***")
             return NOT_SPAM
 
+        user_id = event.sender
+        is_admin = await self.api.is_user_admin(user_id)
+        if is_admin:
+            logger.info(f"*** {self.__class__.__name__}: User {user_id} is a server admin, allowing file upload.")
+            return NOT_SPAM
+
         state_events = await self.api.get_room_state(event.room_id)
 
         # Identify DM status via m.room.create

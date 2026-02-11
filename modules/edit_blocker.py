@@ -30,6 +30,11 @@ class EditBlocker:
             return NOT_SPAM
 
         user_id = event.sender
+        is_admin = await self.api.is_user_admin(user_id)
+        if is_admin:
+            logger.info(f"*** {self.__class__.__name__}: User {user_id} is a server admin, allowing edit.")
+            return NOT_SPAM
+
         room_id = event.room_id
         state_events = await self.api.get_room_state(room_id)
         power_levels = state_events.get(("m.room.power_levels", ""), {})
@@ -38,10 +43,10 @@ class EditBlocker:
         users_default = content.get("users_default", 0)
         user_level = users.get(user_id, users_default)
 
-        logger.info(f"EditBlocker: user_id={user_id}, users={users}, users_default={users_default}, user_level={user_level}, power_levels_content={content}")
-
+        # Allow if user is a system admin
+        logger.info(f"EditBlocker: user_id={user_id}, users={users}, users_default={users_default}, user_level={user_level}, is_admin={is_admin}, power_levels_content={content}")
         if user_level < self.required_power_level:
             logger.warning(f"EditBlocker: Blocking edit from {user_id} in {room_id} (PL={user_level})")
-            return (Codes.FORBIDDEN, {"error": f"You need PL {self.required_power_level} to edit messages in this room."})
+            return (Codes.FORBIDDEN, {"error": f"You need PL {self.required_power_level} or to be a server admin to edit messages in this room."})
 
         return NOT_SPAM

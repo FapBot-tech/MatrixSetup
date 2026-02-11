@@ -49,6 +49,12 @@ class WordFilter:
         if event.type != "m.room.message":
             return NOT_SPAM
 
+        user_id = event.sender
+        is_admin = await self.api.is_user_admin(user_id)
+        if is_admin:
+            logger.info(f"*** {self.__class__.__name__}: User {user_id} is a server admin, allowing content.")
+            return NOT_SPAM
+
         body = event.content.get("body", "")
         new_body = body
         modified = False
