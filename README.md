@@ -36,7 +36,7 @@ NGINX_HTTPS_PORT=443
 Replace `your_POSTGRES_PASSWORD` and `your.domain` with your own values.
 
 ### 2. Add SSL certificates
-Add an SSL certificate that covers both `msg.$DOMAIN` and `chat.$DOMAIN` to the `nginx-certs/` folder:
+Add an SSL certificate that covers all subdomains `msg.$DOMAIN`, `admin.$DOMAIN` and `chat.$DOMAIN` to the `nginx-certs/` folder:
 - Place your full certificate chain as `nginx-certs/fullchain.pem`
 - Place your private key as `nginx-certs/privkey.pem`
 
