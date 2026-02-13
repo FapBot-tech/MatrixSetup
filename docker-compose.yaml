@@ -1,6 +1,7 @@
 services:
   synapse:
     container_name: synapse-2
+    hostname: synapse-2
     build: .
     restart: unless-stopped
     ports:
@@ -8,9 +9,10 @@ services:
     volumes:
       # This matches your 'synapse-data' volume from your docker run command
       - ./data:/data
-      - ./homeserver.yaml:/data/homeserver.yaml:ro
     environment:
       - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+      - DOMAIN=${DOMAIN}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     depends_on:
       - db
 
@@ -30,6 +32,33 @@ services:
     ports:
       - "5433:5433"
     command: -p 5433
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-matrix
+    restart: unless-stopped
+    depends_on:
+      - synapse
+    ports:
+      - "${NGINX_HTTP_PORT}:80"
+      - "${NGINX_HTTPS_PORT}:443"
+    volumes:
+      - ./public_html:/public_html:ro
+      - ./nginx.conf.template:/nginx.conf.template:ro
+      - ./nginx-entrypoint.sh:/nginx-entrypoint.sh:ro
+      - ./nginx-certs:/etc/nginx/certs:ro
+    environment:
+      - DOMAIN=${DOMAIN}
+    entrypoint: ["/nginx-entrypoint.sh"]
+
+  synapse-admin:
+    container_name: synapse-admin
+    hostname: synapse-admin
+    image: ghcr.io/etkecc/synapse-admin:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
 
 volumes:
   synapse-2-db-data:

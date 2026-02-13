@@ -1,117 +1,99 @@
-#### @TODO: Expand docker file to spin up everything:
-* Synapse proxy (chat.%domain%)
-* Custom - Cinny fork (%domain%) https://github.com/FapBot-tech/cinny (See if I can make my own deployments with the dist results)
-* (Maybe) Fapbot instance (moderation.%domain%) 
+# Matrix Synapse Docker Setup
+
+A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/) server stack with Nginx reverse proxy, PostgreSQL, and custom moderation modules. This project is designed for easy local or small-scale deployment.
 
 ---
 
-# Matrix Synapse Deployment (v1.114.0)
+## Features
+- **Matrix Synapse** server with custom configuration
+- **Nginx** reverse proxy with SSL support
+- **PostgreSQL** database
+- **Custom moderation modules** (see `modules/`)
+- **Static web frontend** (see `public_html/`)
+- **Admin panel** available at `admin.$DOMAIN`
 
-This repository contains a production-ready Matrix Synapse deployment using **PostgreSQL 16** and custom **Python spam-filtering modules**.
 
-## 🚀 Getting Started
+Matrix will end up running on `msg.$DOMAIN`, the static web client on `chat.$DOMAIN`, and the admin panel on `admin.$DOMAIN`.
 
-### 1. Prerequisites
-* Docker and Docker Compose installed.
-* A domain name (e.g., `chat.your.domain`) pointing to your host IP.
-* An existing Docker volume named `synapse-data` (or change `external: true` to `false` in `docker-compose.yaml`).
+---
 
-Before running the stack, create a `.env` file in the root directory:
+## Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed
+- A domain name (for production use)
 
-```bash
-echo "POSTGRES_PASSWORD=your_secure_password" > .env
+---
+
+## Quick Start
+
+### 1. Create a `.env` file
+Create a `.env` file in the project root with the following content:
+```dotenv
+POSTGRES_PASSWORD=your_POSTGRES_PASSWORD
+DOMAIN=your.domain
+NGINX_HTTP_PORT=80
+NGINX_HTTPS_PORT=443
+```
+Replace `your_POSTGRES_PASSWORD` and `your.domain` with your own values.
+
+### 2. Add SSL certificates
+Add an SSL certificate that covers both `msg.$DOMAIN` and `chat.$DOMAIN` to the `nginx-certs/` folder:
+- Place your full certificate chain as `nginx-certs/fullchain.pem`
+- Place your private key as `nginx-certs/privkey.pem`
+
+You can use [Let's Encrypt](https://letsencrypt.org/) or another certificate authority. Make sure the certificate is valid for both subdomains.
+
+### 3. Start the containers
+```sh
+docker compose up
 ```
 
-
-Then make sure the password in your homeserver.yaml matches whatever you've got in your env
-
-### 2. Installation & Build
-Build the custom image (which includes the `python-magic` dependencies and custom modules) and start the stack:
-
-```bash
-docker compose up -d
-
-```
-
-Then we'll need to generate the initial configuration file for Synapse:
-
-
-```bash
-docker run -it --rm \
-    dst=/data \
-    -e SYNAPSE_SERVER_NAME=chat.your.domain \
-    -e SYNAPSE_REPORT_STATS=yes \
-    matrixdotorg/synapse:latest generate
-```
-
-* **URL:** `http://localhost:8008`
-
-### 3. Create an Admin User
-
-Run the following command to create your first user. You will be prompted for a password and asked if the user should be an admin (choose **yes**):
-
-```bash
+### 4. Register your first user
+```sh
 docker exec -it synapse-2 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+```
+Follow the prompts to set a username and password.
 
+### 5. Configure your server
+Edit `homeserver.yaml` in the `data/` directory to customize your server settings. See [Synapse documentation](https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html) for all options.
+
+After making changes, rebuild and restart:
+```sh
+docker compose build --no-cache && docker compose up
 ```
 
 ---
 
-## 🛠 Administration & UI
+## Custom Modules
+Custom moderation and utility modules are located in the [`modules/`](modules/) directory:
+- `channel_config_command.py`
+- `edit_blocker.py`
+- `file_type_filter.py`
+- `private_message_file_blocker.py`
+- `room_restrict.py`
+- `word_filter.py`
 
-### Synapse Admin Interface
-
-To manage users, rooms, and server settings via a GUI, run the Synapse Admin tool:
-
-```bash
-docker run -d -p 8080:80 --name synapse-admin awesometechnologies/synapse-admin
-
-```
-
-* **URL:** `http://localhost:8080`
-
-### Matrix Web Client (Cinny)
-
-1. Download the latest release from the [Cinny GitHub Releases](https://www.google.com/search?q=https://github.com/cinnyapp/cinny/releases).
-2. Upload the static files to the root directory of your web host (Nginx/Apache).
-3. Login using your homeserver URL.
-
-### Power Level Defaults
-
-This server is configured with a **"Read-Only by Default"** policy for new rooms:
-
-* **Messaging Level:** 10 (Required to send messages).
-* **New User Level:** 10 (Users join with this level).
-* **Muting:** To mute a user, an admin simply demotes that user's Power Level to **0** via the room settings.
+These are automatically copied into the Synapse container and enabled via configuration.
 
 ---
 
-## 🌐 Reverse Proxy Configuration (Apache)
+## Static Web Frontend
+The `public_html/` directory contains a static web client, served at `https://chat.<your.domain>` via Nginx.
 
-To allow users to connect via a standard domain without specifying port `8008`, use the following Apache proxy configuration:
+---
 
-```apache2
-<VirtualHost *:80>
-    ServerName msg.fapbot.tech
+## Troubleshooting
+- **Logs:** Check `data/homeserver.log` for Synapse logs.
+- **Configuration:** Ensure your `.env` and `homeserver.yaml` are correct.
+- **Ports:** Make sure ports 80/443 (or those set in `.env`) are open and not in use.
+- **Certificates:** Place your SSL certs in `nginx-certs/` as `fullchain.pem` and `privkey.pem`.
 
-    ProxyRequests On
-    ProxyPass / http://localhost:8008/
-    ProxyPassReverse / http://localhost:8008/
-    
-    # Optional: Preserve Host for Synapse logging
-    ProxyPreserveHost On
-</VirtualHost>
+---
 
-```
+## Useful Links
+- [Matrix Synapse Documentation](https://element-hq.github.io/synapse/latest/)
+- [Matrix Spec](https://spec.matrix.org/)
 
-## ⚙️ Configuration Files
-* **homeserver.yaml:** Main Synapse configuration file located in the `synapse-data` volume.
-* **docker-compose.yaml:** Docker Compose file defining services, volumes, and networks.
-* **Dockerfile:** Custom Dockerfile for building the Synapse image with additional modules.
+---
 
-## 📝 Maintenance Note
-
-* **Image Lock:** The `Dockerfile` is pinned to a specific SHA digest (`v1.114.0@sha256:3c0725...`) to ensure long-term stability across different environments.
-* **Database:** Uses **PostgreSQL 16-alpine**. Database credentials match between `docker-compose.yaml` and `homeserver.yaml`.
-* **Python Version:** Custom modules are installed into the `python3.13` site-packages directory to match the base image environment.
-
+## License
+See [LICENSE](LICENSE) if present, or assume AGPL-3.0 as per Synapse upstream.

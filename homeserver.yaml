@@ -9,8 +9,8 @@
 # For more information on how to configure Synapse, including a complete accounting of
 # each option, go to docs/usage/configuration/config_documentation.md or
 # https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
-server_name: "msg.fapbot.tech" # Replace with your own domain, this is what the matrix backend will run, not what the users type in their browser
-web_client_location: https://chat.fapbot.tech
+server_name: "msg.${DOMAIN}" # Replace with your own domain, this is what the matrix backend will run, not what the users type in their browser
+web_client_location: https://chat.${DOMAIN}
 pid_file: /data/homeserver.pid
 listeners:
   - port: 8088
@@ -26,7 +26,7 @@ database:
   name: psycopg2
   args:
     user: synapse
-    password: lYSeulAQltFcsl7V4gcW # Replace with your enviroment variable defined password
+    password: ${POSTGRES_PASSWORD}
     dbname: synapse
     host: db
     port: 5433
@@ -91,7 +91,7 @@ media_upload_limits:
 
 # Which rooms should be automatically joined by new users, you can add more rooms here. Make sure the room IDs are correct.
 auto_join_rooms:
-  - "#general:msg.fapbot.tech"
+  - "#general:msg.${DOMAIN}"
 
 # Can also be removed if we use oAuth2 or SSO
 password_config:
@@ -108,8 +108,8 @@ media_store_path: /data/media_store
 registration_shared_secret: "bhOhyJgxMi*7oHPrOR1Ns;ikR3cP,GdbcMxtVK24dDLCWr@Lxu"
 macaroon_secret_key: "_S1MK:d7dM8u.X.i~V8T6,GIlV+I0b0~GdYNgGb3SAGF,hp=za"
 form_secret: "lSJZPookogou=eC_M21E@^U;b9QvrSkdT-7=V,HR8LG2qIX3TS"
-signing_key_path: "/data/msg.fapbot.tech.signing.key"
-log_config: "/data/msg.fapbot.tech.log.config"
+signing_key_path: "/data/msg.${DOMAIN}.signing.key"
+log_config: "/data/msg.${DOMAIN}.log.config"
 
 trusted_key_servers:
     - server_name: "matrix.org"
@@ -179,9 +179,9 @@ default_power_level_content_override:
 server_notices:
   system_mxid_localpart: notices
   system_mxid_display_name: Fapbot Notices
-  system_mxid_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
+#  system_mxid_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_name: Fapbot Notices
-  room_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
+#  room_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_topic: The Almighty Fapbot will send you important notices in this room, make sure to read them!
   auto_join: true
 
