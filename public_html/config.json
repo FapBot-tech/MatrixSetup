@@ -1,14 +1,14 @@
 {
   "defaultHomeserver": 0,
   "homeserverList": [
-    "chat.localhost"
+    "msg.fapbot.tech"
   ],
   "allowCustomHomeservers": false,
   "featuredCommunities": {
     "openAsDefault": false,
     "spaces": [],
     "rooms": [
-      "#general:localhost"
+      "#general:chat.fapbot.tech"
     ],
     "servers": []
   },
