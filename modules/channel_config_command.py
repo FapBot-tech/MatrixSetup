@@ -8,7 +8,8 @@ DEFAULT_CINNY_POWER_LEVEL_TAGS = {
     "0": {"name": "Muted", "color": "#ff0000", "icon": {"key": "🤡"}},
     "10": {"name": "Member", "color": "#ffffff"},
     "50": {"name": "Moderator", "color": "#1fd81f"},
-    "100": {"name": "Admin", "color": "#0088ff"},
+    "99": {"name": "Admin", "color": "#0088ff"},
+    "100": {"name": "Super Admin", "color": "#cb00ff"},
     "999": {"name": "Final boss", "color": "#000000"}
 }
 

@@ -61,6 +61,32 @@ After making changes, rebuild and restart:
 docker compose build --no-cache && docker compose up
 ```
 
+Then finally we'll need to update the Cinny config to show the correct domain for login. Header over to `./public_html/config.json` and replace
+the `homeserverList` value with the correct domain, eg:
+```json
+
+{
+  "defaultHomeserver": 0,
+  "homeserverList": [
+    "msg.nils.com"
+  ],
+  "allowCustomHomeservers": false,
+  "featuredCommunities": {
+    "openAsDefault": false,
+    "spaces": [],
+    "rooms": [
+      "#general:msg.nils.com"
+    ],
+    "servers": []
+  },
+  "hashRouter": {
+    "enabled": true,
+    "basename": "/"
+  }
+}
+
+```
+
 ---
 
 ## Custom Modules

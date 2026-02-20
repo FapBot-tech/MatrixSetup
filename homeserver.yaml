@@ -40,6 +40,9 @@ rc_message:
 rc_media_create:
   per_second: 1.0
   burst_count: 3.0
+rc_login:
+  per_second: 5.0
+  burst_count: 10.0
 
 enable_registration_without_verification: true  # Remove when using oAuth2 or SSO
 enable_registration: true                       # Remove when using oAuth2 or SSO
@@ -77,8 +80,10 @@ retention:
 max_upload_size: 100M # Max size a single upload can be
 max_avatar_size: 100M # Max size a single avatar upload can be
 max_spider_size: 100M
-session_lifetime: 24h
+session_lifetime: 96h
 delete_stale_devices_after: 30d
+refreshable_access_token_lifetime: 6h
+refresh_token_lifetime: 4h
 
 media_retention:
   local_media_lifetime: 30d # How long media uploaded to this server is retained
@@ -161,6 +166,19 @@ default_power_level_content_override:
     state_default: 100 # Min power level to change room state (moderator or above)
   public_chat: # Open group
     events:
+      "m.room.name": 99,
+      "m.room.power_levels": 99,
+      "m.room.history_visibility": 99,
+      "m.room.canonical_alias": 99,
+      "m.room.avatar": 99,
+      "m.room.tombstone": 99,
+      "m.room.server_acl": 99,
+      "m.sticker": 10,
+      "m.reaction": 10,
+      "m.room.pinned_events": 99,
+      "m.room.topic": 99,
+      "m.room.join_rules": 99,
+      "in.cinny.room.power_level_tags": 99,
       "m.room.encryption": 999
       "m.room.message": 10
       "m.room.redaction": 50
@@ -179,9 +197,9 @@ default_power_level_content_override:
 server_notices:
   system_mxid_localpart: notices
   system_mxid_display_name: Fapbot Notices
-#  system_mxid_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
+  system_mxid_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_name: Fapbot Notices
-#  room_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
+  room_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_topic: The Almighty Fapbot will send you important notices in this room, make sure to read them!
   auto_join: true
 
@@ -205,7 +223,8 @@ modules:
         "0": { name: "Muted", color: "#ff0000", icon: { key: "🤡" } }
         "10": { name: "Member", color: "#ffffff" }
         "50": { name: "Moderator", color: "#1fd81f" }
-        "100": { name: "Admin", color: "#0088ff" }
+        "99": { name: "Admin", color: "#0088ff" }
+        "100": { name: "Super Admin", color: "#cb00ff" }
         "999": { name: "Final boss", color: "#000000" }
 
   # Blocks uploads of file types not in the allowed list. Uses 'libmagic1' MIME type detection, so make sure the allowed types are valid MIME types and not just file extensions. (This is also the only applicable plugin for admins)
