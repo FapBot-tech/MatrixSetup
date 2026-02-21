@@ -1,6 +1,6 @@
 # Matrix Synapse Docker Setup
 
-A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/) server stack with Nginx reverse proxy, PostgreSQL, and custom moderation modules. This project is designed for easy local or small-scale deployment.
+A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/) server stack with Nginx reverse proxy, PostgreSQL, and custom moderation modules. 
 
 ---
 
