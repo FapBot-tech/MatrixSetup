@@ -21,6 +21,22 @@ listeners:
       - names: [ client, federation ]
         compress: false
 
+# TODO: Update these values to the correct ones to moch the gitlab oauth login
+oidc_providers:
+  - idp_id: gitlab
+    idp_name: Gitlab
+    idp_brand: "gitlab"  # optional: styling hint for clients
+    issuer: "https://gitlab.com/"
+    client_id: "your-client-id" # TO BE FILLED
+    client_secret: "your-client-secret" # TO BE FILLED
+    client_auth_method: "client_secret_post"
+    scopes: ["openid", "read_user"]
+    user_profile_method: "userinfo_endpoint"
+    user_mapping_provider:
+      config:
+        localpart_template: '{{ user.nickname }}'
+        display_name_template: '{{ user.name }}'
+
 # If desired you can update this database to a different configuration. The current one will work with the suplied docker-compose setup.
 database:
   name: psycopg2
