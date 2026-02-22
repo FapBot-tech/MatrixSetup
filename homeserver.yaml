@@ -18,7 +18,7 @@ listeners:
     type: http
     x_forwarded: true
     resources:
-      - names: [ client, federation ]
+      - names: [ client, federation ] # Add the 'metrics' option here if we want to enable grafana
         compress: false
 
 # TODO: Update these values to the correct ones to moch the gitlab oauth login
