@@ -60,15 +60,15 @@ rc_login:
   per_second: 5.0
   burst_count: 10.0
 
-enable_registration_without_verification: true  # Remove when using oAuth2 or SSO
-enable_registration: true                       # Remove when using oAuth2 or SSO
+enable_registration_without_verification: true  # I think we should remove/disable when using oAuth2 or SSO
+enable_registration: true                       # I think we should remove/disable when using oAuth2 or SSO
 report_stats: false
 require_auth_for_profile_requests: true
 suppress_key_server_warning: true
-allow_per_room_profiles: false                  # Change to true if we want users to change their username/avatar per room
+allow_per_room_profiles: false
 dynamic_thumbnails: true
 url_preview_enabled: true
-enable_set_displayname: false                   # Change to true if we want users to have a differnt display name from their username
+enable_set_displayname: false
 enable_group_creation: false
 enable_room_list_search: true
 max_pending_media_uploads: 3
@@ -113,16 +113,6 @@ media_upload_limits:
 # Which rooms should be automatically joined by new users, you can add more rooms here. Make sure the room IDs are correct.
 auto_join_rooms:
   - "#general:msg.${DOMAIN}"
-
-# Can also be removed if we use oAuth2 or SSO
-password_config:
-  policy:
-    enabled: true
-    minimum_length: 8
-    require_digit: false
-    require_symbol: false
-    require_lowercase: false
-    require_uppercase: false
 
 # Paths to various files and directories, make sure these paths are writeable by the synapse process (should be no issue when using docker-compose)
 media_store_path: /data/media_store
@@ -176,7 +166,7 @@ default_power_level_content_override:
     events:
       "m.room.encryption": 999
       "m.room.message": 10
-      "m.room.redaction": 50
+      "m.room.redaction": 999
     events_default: 10
     users_default: 10 # Default power level for users
     state_default: 100 # Min power level to change room state (moderator or above)
@@ -205,7 +195,7 @@ default_power_level_content_override:
     events:
       "m.room.encryption": 999
       "m.room.message": 10
-      "m.room.redaction": 50
+      "m.room.redaction": 999
     events_default: 10
     users_default: 10
     state_default: 100
@@ -213,9 +203,7 @@ default_power_level_content_override:
 server_notices:
   system_mxid_localpart: notices
   system_mxid_display_name: Fapbot Notices
-  system_mxid_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_name: Fapbot Notices
-  room_avatar_url: mxc://msg.fapbot.tech/nsxabiRuNyiKyKEGbEDtFmdV
   room_topic: The Almighty Fapbot will send you important notices in this room, make sure to read them!
   auto_join: true
 
