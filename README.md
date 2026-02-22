@@ -1,6 +1,6 @@
 # Matrix Synapse Docker Setup
 
-A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/) server stack with Nginx reverse proxy, PostgreSQL, and custom moderation modules. 
+A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/) server stack with Nginx reverse proxy, PostgreSQL, and custom moderation modules. This project is designed for easy local or small-scale deployment.
 
 ---
 
@@ -14,7 +14,6 @@ A ready-to-use [Matrix Synapse](https://matrix.org/docs/projects/server/synapse/
 
 
 Matrix will end up running on `msg.$DOMAIN`, the static web client on `chat.$DOMAIN`, and the admin panel on `admin.$DOMAIN`.
-(these domains can be configured in `nginx.conf.template`, though keep in mind that changing the Matrix domain also requires chanegs to the `homeserver.yaml`. Once the Matrix server has been setup, it's domain should not be changed. Of course you're also more than welcome to not use the nginx webserver and setup your own proxies, again check `nginx.conf.template` to see which port should go where.)
 
 ---
 
@@ -37,9 +36,7 @@ NGINX_HTTPS_PORT=443
 Replace `your_POSTGRES_PASSWORD` and `your.domain` with your own values.
 
 ### 2. Add SSL certificates
-(If you don't want to use the nginx, remove the sefvice from the dockerfile and skip this step)
-
-Add an SSL certificate that covers all subdomains `msg.$DOMAIN`, `admin.$DOMAIN` and `chat.$DOMAIN` to the `nginx-certs/` folder:
+Add an SSL certificate that covers both `msg.$DOMAIN` and `chat.$DOMAIN` to the `nginx-certs/` folder:
 - Place your full certificate chain as `nginx-certs/fullchain.pem`
 - Place your private key as `nginx-certs/privkey.pem`
 
@@ -50,7 +47,13 @@ You can use [Let's Encrypt](https://letsencrypt.org/) or another certificate aut
 docker compose up
 ```
 
-### 4. Configure your server
+### 4. Register your first user
+```sh
+docker exec -it synapse-2 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml
+```
+Follow the prompts to set a username and password.
+
+### 5. Configure your server
 Edit `homeserver.yaml` in the `data/` directory to customize your server settings. See [Synapse documentation](https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html) for all options.
 
 After making changes, rebuild and restart:
@@ -65,14 +68,14 @@ the `homeserverList` value with the correct domain, eg:
 {
   "defaultHomeserver": 0,
   "homeserverList": [
-    "msg.example.com"
+    "msg.nils.com"
   ],
   "allowCustomHomeservers": false,
   "featuredCommunities": {
     "openAsDefault": false,
     "spaces": [],
     "rooms": [
-      "#general:msg.example.com"
+      "#general:msg.nils.com"
     ],
     "servers": []
   },
@@ -117,3 +120,7 @@ The `public_html/` directory contains a static web client, served at `https://ch
 - [Matrix Spec](https://spec.matrix.org/)
 
 ---
+
+## License
+See [LICENSE](LICENSE) if present, or assume AGPL-3.0 as per Synapse upstream.
+

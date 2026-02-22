@@ -166,31 +166,31 @@ default_power_level_content_override:
     events:
       "m.room.encryption": 999
       "m.room.message": 10
-      "m.room.redaction": 999
     events_default: 10
     users_default: 10 # Default power level for users
     state_default: 100 # Min power level to change room state (moderator or above)
   public_chat: # Open group
     events:
-      "m.room.name": 99,
-      "m.room.power_levels": 99,
-      "m.room.history_visibility": 99,
-      "m.room.canonical_alias": 99,
-      "m.room.avatar": 99,
-      "m.room.tombstone": 99,
-      "m.room.server_acl": 99,
-      "m.sticker": 10,
-      "m.reaction": 10,
-      "m.room.pinned_events": 99,
-      "m.room.topic": 99,
-      "m.room.join_rules": 99,
-      "in.cinny.room.power_level_tags": 99,
+      "m.room.name": 99
+      "m.room.power_levels": 99
+      "m.room.history_visibility": 99
+      "m.room.canonical_alias": 99
+      "m.room.avatar": 99
+      "m.room.tombstone": 99
+      "m.room.server_acl": 99
+      "m.sticker": 10
+      "m.reaction": 10
+      "m.room.pinned_events": 99
+      "m.room.topic": 99
+      "m.room.join_rules": 99
+      "in.cinny.room.power_level_tags": 99
       "m.room.encryption": 999
       "m.room.message": 10
       "m.room.redaction": 50
     events_default: 10
     users_default: 10
     state_default: 100
+    invite: 10
   trusted_private_chat: # Direct messages between users
     events:
       "m.room.encryption": 999
@@ -199,6 +199,8 @@ default_power_level_content_override:
     events_default: 10
     users_default: 10
     state_default: 100
+    invite: 100
+    redact: 999
 
 server_notices:
   system_mxid_localpart: notices
@@ -219,6 +221,9 @@ modules:
   - module: edit_blocker.EditBlocker
     config:
       required_power_level: 50
+
+  # Blocks users from inviting others to direct message rooms after creation. Only two participants allowed.
+  - module: dm_invite_blocker.DirectMessageInviteBlocker
 
   # Sets the power levels for the channel, makes it public, and publishes it when `!channelconfig` is sent in to the below configured values. Can only be used by system admins.
   - module: channel_config_command.ChannelConfigCommand
